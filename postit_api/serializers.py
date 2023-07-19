@@ -30,3 +30,21 @@ class AlbumReviewLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = AlbumReviewLike
         fields = '__all__'
+
+
+class BandSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Band
+        fields = '__all__'
+
+class SongSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Song
+        fields = '__all__'
+
+class AlbumSerializer(serializers.ModelSerializer):
+    bands = BandSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Album
+        fields = '__all__'
