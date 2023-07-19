@@ -4,13 +4,18 @@
     <title>API Index Page</title>
 </head>
 <body>
-    <h1>Welcome to the Musicweb API!</h1>
+    <h1>Welcome to the Musicweb!</h1>
     <p>This is the index page for the API.</p>
     <p>Endpoints:</p>
     <ul>
-        <li><a href="{% url 'band-list' %}">Bands</a></li>  <!-- Use 'band-list' as the name -->
-        <li><a href="{% url 'album-list' %}">Albums</a></li>  <!-- Use 'album-list' as the name -->
-        <!-- Add more endpoints here as needed -->
+        <li><a href="{% url 'band-list-create' %}">Bands</a></li>
+        <li><a href="{% url 'album-list-create' %}">Albums</a></li>
+        <li><a href="{% url 'song-list-create' %}">Songs</a></li>
+    </ul>
+    <p>Create:</p>
+    <ul>
+        <li><a href="{% url 'album-review-list-create' %}">Album Review</a></li>
+        <li><a href="{% url 'album-review-like-list-create' %}">Album Review Like</a></li>
     </ul>
 </body>
 </html>
