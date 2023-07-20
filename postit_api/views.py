@@ -1,21 +1,16 @@
-from django.views.generic import TemplateView
-from rest_framework import generics
+from rest_framework import generics, status, permissions
 from rest_framework.response import Response
-from .models import Band, Album, Song, AlbumReview, AlbumReviewComment, AlbumReviewLike
-from .serializers import BandSerializer, AlbumSerializer, SongSerializer, AlbumReviewSerializer, AlbumReviewCommentSerializer, AlbumReviewLikeSerializer
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
-from rest_framework.generics import ListCreateAPIView
-from .models import Band
-from .serializers import BandSerializer
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
+from .models import Band, Album, Song, AlbumReview, AlbumReviewComment, AlbumReviewLike, Comment
+from .serializers import BandSerializer, AlbumSerializer, SongSerializer, AlbumReviewSerializer, AlbumReviewCommentSerializer, AlbumReviewLikeSerializer, CommentSerializer
+from rest_framework.permissions import IsAuthenticated
+from .models import Comment
+from .serializers import CommentSerializer
 
 
-class BandListCreateView(ListCreateAPIView):
+class BandListCreateView(generics.ListCreateAPIView):
     queryset = Band.objects.all()
     serializer_class = BandSerializer
+
 class AlbumListCreateView(generics.ListCreateAPIView):
     queryset = Album.objects.all()
     serializer_class = AlbumSerializer
@@ -36,28 +31,66 @@ class AlbumReviewLikeListCreateView(generics.ListCreateAPIView):
     queryset = AlbumReviewLike.objects.all()
     serializer_class = AlbumReviewLikeSerializer
 
-class IndexView(TemplateView):
-    template_name = 'index.html'
+class AlbumReviewDeleteView(generics.DestroyAPIView):
+    queryset = AlbumReview.objects.all()
+    serializer_class = AlbumReviewSerializer
+    permission_classes = [IsAuthenticated]
 
-@login_required
-def index(request):
-    return render(request, 'index.html', {'user': request.user})
-
-
-
-def login_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        user = authenticate(request, email=email, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('index')
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.user == request.user:
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
-            message = 'Invalid login credentials. Please try again.'
-            return render(request, 'login.html', {'message': message})
-    return render(request, 'login.html')
+            return Response({'message': 'You do not have permission to delete this review.'}, status=status.HTTP_403_FORBIDDEN)
 
-def logout_view(request):
-    logout(request)
-    return redirect('index')
+class SongDeleteView(generics.DestroyAPIView):
+    queryset = Song.objects.all()
+    serializer_class = SongSerializer
+
+
+class LikeDeleteView(generics.DestroyAPIView):
+    queryset = AlbumReviewLike.objects.all()
+    serializer_class = AlbumReviewLikeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if instance.user == request.user:
+            self.perform_destroy(instance)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response({'message': 'You do not have permission to delete this like.'}, status=status.HTTP_403_FORBIDDEN)
+
+
+class SongCommentListCreateView(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        song_id = self.kwargs['song_id']
+        return Comment.objects.filter(song_id=song_id)
+
+    def perform_create(self, serializer):
+        song_id = self.kwargs['song_id']
+        serializer.save(user=self.request.user, song_id=song_id)
+
+class CommentList(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        song_id = self.kwargs['song_id']
+        song = Song.objects.get(pk=song_id)
+        return Comment.objects.filter(song=song)
+
+    def perform_create(self, serializer):
+        song_id = self.kwargs['song_id']
+        song = Song.objects.get(pk=song_id)
+        serializer.save(user=self.request.user, song=song)
+
+
+class AllCommentList(generics.ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
