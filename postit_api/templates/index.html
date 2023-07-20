@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- index.html -->
 <html>
 <head>
     <title>API Index Page</title>
@@ -6,9 +6,14 @@
 <body>
     <h1>Welcome to the Musicweb!</h1>
     <p>This is the index page for the API.</p>
+    {% if user.is_authenticated %}
+        <p>Logged in as: {{ user.username }}</p> <!-- Display the logged-in user's email -->
+    {% else %}
+        <p>Not logged in</p>
+    {% endif %}
     <p>Endpoints:</p>
     <ul>
-        <li><a href="{% url 'band-list-create' %}">Bands</a></li>
+        <li><a href="{% url 'band-list' %}">Bands</a></li>
         <li><a href="{% url 'album-list-create' %}">Albums</a></li>
         <li><a href="{% url 'song-list-create' %}">Songs</a></li>
     </ul>
@@ -17,5 +22,6 @@
         <li><a href="{% url 'album-review-list-create' %}">Album Review</a></li>
         <li><a href="{% url 'album-review-like-list-create' %}">Album Review Like</a></li>
     </ul>
+    <p><a href="{% url 'login' %}">Login</a></p>
 </body>
 </html>

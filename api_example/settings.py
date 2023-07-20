@@ -136,3 +136,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',  # Enable pagination
     'PAGE_SIZE': 10,  # Set the number of items per page (adjust as needed)
 }
+
+LOGIN_REDIRECT_URL = '/api/'
