@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bands</title>
+</head>
+<body>
+    <h1>List of Bands</h1>
+    <ul>
+        {% for band in bands %}
+            <li>{{ band.name }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

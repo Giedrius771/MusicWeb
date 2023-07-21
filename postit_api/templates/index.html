@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Index</title>
+</head>
+<body>
+    <h1>API Index</h1>
+    <ul>
+        <li><a href="{% url 'band-list' %}">List Bands</a></li>
+        <li><a href="{% url 'album-list-create' %}">List Albums</a></li>
+        <li><a href="{% url 'song-list-create' %}">List Songs</a></li>
+        <li><a href="{% url 'album-review-list-create' %}">List Album Reviews</a></li>
+        <li><a href="{% url 'album-review-like-list-create' %}">List Album Review Likes</a></li>
+        <li><a href="{% url 'album-review-delete' review_id=1 %}">Delete Album Review</a></li>
+        <li><a href="{% url 'song-delete' pk=1 %}">Delete Song</a></li>
+        <li><a href="{% url 'like-delete' pk=1 %}">Delete Like</a></li>
+        <li><a href="{% url 'song-comment-list-create' song_id=1 %}">Song Comments</a></li>
+        <li><a href="{% url 'all-comment-list' %}">All Comments</a></li>
+        <li><a href="{% url 'song-like-list-create' %}">List Song Likes</a></li>
+    </ul>
+</body>
+</html>
