@@ -96,6 +96,7 @@ class Comment(models.Model):
     song = models.ForeignKey(Song, on_delete=models.CASCADE)  # Or Album, depending on your use case
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='pictures', null=True)
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.song.name}"
